@@ -6,7 +6,7 @@ import { ThemeProvider } from './ThemeProvider';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'MyDrive - Adel Drive Clone',
+  title: 'MyDrive - Google Drive Clone',
   description: 'A simple Google Drive clone built with Next.js',
 };
 
