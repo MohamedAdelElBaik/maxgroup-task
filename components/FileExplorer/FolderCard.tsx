@@ -21,7 +21,6 @@ export const FolderCard = forwardRef<HTMLDivElement, FolderCardProps>(
     const formattedDate = new Date(folder.createdAt).toLocaleDateString();
 
     const handleClick = (e: React.MouseEvent) => {
-      // Only trigger onSelect if the click is not on a button or dropdown
       if (!(e.target as HTMLElement).closest('button')) {
         onSelect();
       }

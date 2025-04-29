@@ -19,7 +19,6 @@ interface FileCardProps {
 export const FileCard = forwardRef<HTMLDivElement, FileCardProps>(
   ({ file }, ref) => {
     const formattedDate = new Date(file.createdAt).toLocaleDateString();
-    // Mock file size (since DriveItem doesn't store size)
     const formattedSize = formatFileSize(Math.floor(Math.random() * 1000000)); // Random size up to 1MB
 
     function formatFileSize(bytes: number): string {

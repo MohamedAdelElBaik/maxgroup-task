@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { ActionBar } from './ActionBar';
 import { FileCard } from './FileCard';
 import { FolderCard } from './FolderCard';
