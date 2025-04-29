@@ -11,21 +11,29 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { forwardRef } from 'react';
 import { DriveItem } from '@/lib/types';
+import { deleteItem } from '@/lib/fun';
 
 interface FileCardProps {
   file: DriveItem;
+  onDelete: () => void;
 }
 
 export const FileCard = forwardRef<HTMLDivElement, FileCardProps>(
-  ({ file }, ref) => {
+  ({ file, onDelete }, ref) => {
     const formattedDate = new Date(file.createdAt).toLocaleDateString();
-    const formattedSize = formatFileSize(Math.floor(Math.random() * 1000000)); // Random size up to 1MB
+    const formattedSize = formatFileSize(Math.floor(Math.random() * 1000000));
 
     function formatFileSize(bytes: number): string {
       if (bytes < 1024) return `${bytes} B`;
       if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
       return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
     }
+
+    const handleDelete = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      deleteItem(file.id);
+      onDelete(); // Refresh the parent component
+    };
 
     return (
       <div
@@ -61,6 +69,7 @@ export const FileCard = forwardRef<HTMLDivElement, FileCardProps>(
           <DropdownMenuContent align="end">
             <DropdownMenuItem
               className="text-destructive focus:text-destructive cursor-pointer"
+              onClick={handleDelete}
             >
               <Trash className="h-4 w-4 mr-2" />
               Delete

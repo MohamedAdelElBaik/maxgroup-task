@@ -10,15 +10,23 @@ import {
 import { Button } from '@/components/ui/button';
 import { forwardRef } from 'react';
 import { DriveItem } from '@/lib/types';
+import { deleteItem } from '@/lib/fun';
 
 interface FolderCardProps {
   folder: DriveItem;
   onSelect: () => void;
+  onDelete: () => void;
 }
 
 export const FolderCard = forwardRef<HTMLDivElement, FolderCardProps>(
-  ({ folder, onSelect }, ref) => {
+  ({ folder, onSelect, onDelete }, ref) => {
     const formattedDate = new Date(folder.createdAt).toLocaleDateString();
+
+    const handleDelete = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      deleteItem(folder.id);
+      onDelete();
+    };
 
     const handleClick = (e: React.MouseEvent) => {
       if (!(e.target as HTMLElement).closest('button')) {
@@ -59,9 +67,10 @@ export const FolderCard = forwardRef<HTMLDivElement, FolderCardProps>(
               <span className="sr-only">Actions</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+          <DropdownMenuContent align="end">
             <DropdownMenuItem
               className="text-destructive focus:text-destructive cursor-pointer"
+              onClick={handleDelete}
             >
               <Trash className="h-4 w-4 mr-2" />
               Delete

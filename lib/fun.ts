@@ -104,3 +104,38 @@ export function findItemById(id: string, items: DriveItem[]): DriveItem | undefi
   }
   return undefined;
 }
+
+export function deleteItem(id: string): DriveItem[] {
+  const allItems = getAllItems();
+
+  const index = allItems.findIndex(item => item.id === id);
+  if (index !== -1) {
+    allItems.splice(index, 1);
+    storeItemsInLocalStorage(allItems);
+    return allItems;
+  }
+
+  const parent = findParent(id, allItems);
+  if (parent) {
+    const childIndex = parent.child.findIndex(item => item.id === id);
+    if (childIndex !== -1) {
+      parent.child.splice(childIndex, 1);
+      storeItemsInLocalStorage(allItems);
+    }
+  }
+
+  return allItems;
+}
+
+function findParent(id: string, items: DriveItem[]): DriveItem | null {
+  for (const item of items) {
+    if (item.child.some(child => child.id === id)) {
+      return item;
+    }
+    if (item.child.length > 0) {
+      const found = findParent(id, item.child);
+      if (found) return found;
+    }
+  }
+  return null;
+}

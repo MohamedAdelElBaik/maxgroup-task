@@ -49,9 +49,18 @@ export function FileExplorer({ driveItems, onFolderSelect, currentFolder, breadc
       <div className="grid grid-cols-1 gap-4">
         {driveItems.map(item => (
           item.type === "file" ? (
-            <FileCard key={item.id} file={item} />
+            <FileCard
+              key={item.id}
+              file={item}
+              onDelete={onRefresh}
+            />
           ) : (
-            <FolderCard key={item.id} folder={item} onSelect={() => onFolderSelect(item)} />
+            <FolderCard
+              key={item.id}
+              folder={item}
+              onSelect={() => onFolderSelect(item)}
+              onDelete={onRefresh}
+            />
           )
         ))}
       </div>
