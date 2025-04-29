@@ -8,9 +8,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { forwardRef } from 'react';
+import { forwardRef, useState } from 'react';
 import { DriveItem } from '@/lib/types';
 import { deleteItem } from '@/lib/fun';
+import { ConfirmDialog } from './ConfirmDialog';
 
 interface FolderCardProps {
   folder: DriveItem;
@@ -22,10 +23,17 @@ export const FolderCard = forwardRef<HTMLDivElement, FolderCardProps>(
   ({ folder, onSelect, onDelete }, ref) => {
     const formattedDate = new Date(folder.createdAt).toLocaleDateString();
 
+    const [showConfirm, setShowConfirm] = useState(false);
+
     const handleDelete = (e: React.MouseEvent) => {
       e.stopPropagation();
+      setShowConfirm(true);
+    };
+
+    const confirmDelete = () => {
       deleteItem(folder.id);
       onDelete();
+      setShowConfirm(false);
     };
 
     const handleClick = (e: React.MouseEvent) => {
@@ -77,6 +85,14 @@ export const FolderCard = forwardRef<HTMLDivElement, FolderCardProps>(
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <ConfirmDialog
+          open={showConfirm}
+          onOpenChange={setShowConfirm}
+          onConfirm={confirmDelete}
+          title={`Delete ${folder.name}?`}
+          description="This action cannot be undone. Are you sure you want to delete this item?"
+        />
       </div>
     );
   }

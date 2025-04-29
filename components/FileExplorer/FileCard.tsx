@@ -9,9 +9,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { forwardRef } from 'react';
+import { forwardRef, useState } from 'react';
 import { DriveItem } from '@/lib/types';
 import { deleteItem } from '@/lib/fun';
+import { ConfirmDialog } from './ConfirmDialog';
 
 interface FileCardProps {
   file: DriveItem;
@@ -22,6 +23,7 @@ export const FileCard = forwardRef<HTMLDivElement, FileCardProps>(
   ({ file, onDelete }, ref) => {
     const formattedDate = new Date(file.createdAt).toLocaleDateString();
     const formattedSize = formatFileSize(Math.floor(Math.random() * 1000000));
+    const [showConfirm, setShowConfirm] = useState(false);
 
     function formatFileSize(bytes: number): string {
       if (bytes < 1024) return `${bytes} B`;
@@ -31,8 +33,13 @@ export const FileCard = forwardRef<HTMLDivElement, FileCardProps>(
 
     const handleDelete = (e: React.MouseEvent) => {
       e.stopPropagation();
+      setShowConfirm(true);
+    };
+
+    const confirmDelete = () => {
       deleteItem(file.id);
-      onDelete(); // Refresh the parent component
+      onDelete();
+      setShowConfirm(false);
     };
 
     return (
@@ -76,6 +83,14 @@ export const FileCard = forwardRef<HTMLDivElement, FileCardProps>(
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <ConfirmDialog
+          open={showConfirm}
+          onOpenChange={setShowConfirm}
+          onConfirm={confirmDelete}
+          title={`Delete ${file.name}?`}
+          description="This action cannot be undone. Are you sure you want to delete this item?"
+        />
       </div>
     );
   }
