@@ -1,19 +1,12 @@
-import { Sidebar } from '@/components/Sidebar/Sidebar';
-import { MobileNav } from '@/components/MobileNav/MobileNav';
+"use client"
 import { FileExplorer } from '@/components/FileExplorer/FileEplorer';
+import { getAllItems } from '@/lib/fun';
 
 export default function Home() {
+  const driveItems = getAllItems();
+  console.log(driveItems)
+
   return (
-    <div className="flex flex-col h-screen bg-background">
-      <MobileNav />
-
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar />
-
-        <main className="flex-1 overflow-y-auto">
-          <FileExplorer />
-        </main>
-      </div>
-    </div>
+    <FileExplorer driveItems={driveItems} />
   );
 }

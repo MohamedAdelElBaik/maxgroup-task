@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { forwardRef } from 'react';
 import { DriveItem } from '@/lib/types';
+import { useRouter } from 'next/navigation';
 
 interface FolderCardProps {
   folder: DriveItem;
@@ -18,9 +19,13 @@ interface FolderCardProps {
 export const FolderCard = forwardRef<HTMLDivElement, FolderCardProps>(
   ({ folder }, ref) => {
     const formattedDate = new Date(folder.createdAt).toLocaleDateString();
+    const router = useRouter();
 
     const handleClick = (e: React.MouseEvent) => {
       // Prevent navigation when clicking dropdown
+      if (!(e.target as HTMLElement).closest('button')) {
+        router.push(folder.id);
+      }
     };
 
     return (

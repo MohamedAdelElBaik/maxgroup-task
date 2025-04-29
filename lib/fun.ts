@@ -11,6 +11,13 @@ export const getAllItems = (): DriveItem[] => {
   return [];
 };
 
+export const getItemById = (id: string | null): DriveItem | undefined => {
+  if (id === null) return undefined;
+
+  const allItems = getAllItems();
+  return allItems.find(item => item.id === id);
+};
+
 export function storeItemInLocalStorage(item: DriveItem) {
   const allItems = getAllItems();
   allItems.push(item);

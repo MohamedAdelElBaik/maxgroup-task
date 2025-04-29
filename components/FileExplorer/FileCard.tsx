@@ -11,9 +11,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { forwardRef } from 'react';
+import { DriveItem } from '@/lib/types';
 
 interface FileCardProps {
-  file: { id: string, name: string, fileType: string, createdAt: string };
+  file: DriveItem;
 }
 
 export const FileCard = forwardRef<HTMLDivElement, FileCardProps>(
