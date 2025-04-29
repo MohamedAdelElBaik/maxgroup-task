@@ -1,32 +1,69 @@
 "use client"
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FileExplorer } from '@/components/FileExplorer/FileEplorer';
-import { getAllItems } from '@/lib/fun';
+import { getAllItems, findItemById } from '@/lib/fun';
 import { DriveItem } from '@/lib/types';
 
 export default function Home() {
   const [currentFolder, setCurrentFolder] = useState<DriveItem | null>(null);
   const [breadcrumbPath, setBreadcrumbPath] = useState<DriveItem[]>([]);
-  const driveItems = currentFolder ? currentFolder.child : getAllItems();
+  const [driveItems, setDriveItems] = useState<DriveItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load initial data and persisted folder on mount
+  useEffect(() => {
+    const allItems = getAllItems();
+    const savedFolderId = localStorage.getItem('current_folder_id');
+
+    if (savedFolderId) {
+      const folder = findItemById(savedFolderId, allItems);
+      if (folder) {
+        setCurrentFolder(folder);
+        buildBreadcrumbPath(folder, allItems);
+        setDriveItems(folder.child);
+      } else {
+        setDriveItems(allItems);
+      }
+    } else {
+      setDriveItems(allItems);
+    }
+
+    setIsLoading(false);
+  }, []);
+
+  const buildBreadcrumbPath = (folder: DriveItem, items: DriveItem[]) => {
+    const path = [];
+    let current: DriveItem | null = folder;
+    while (current) {
+      path.unshift(current);
+      current = findParent(current.id, items);
+    }
+    setBreadcrumbPath(path);
+  };
+
+  const refreshDriveItems = () => {
+    const allItems = getAllItems();
+    const items = currentFolder
+      ? findItemById(currentFolder.id, allItems)?.child || []
+      : allItems;
+    setDriveItems(items);
+  };
 
   const handleFolderSelect = (folder: DriveItem | null) => {
-    setCurrentFolder(folder);
+    const allItems = getAllItems();
     if (folder) {
-      // Build breadcrumb path
-      const path = [];
-      let current: DriveItem | null = folder;
-      while (current) {
-        path.unshift(current);
-        // Find parent (simplified; in a real app, store parentId in DriveItem)
-        current = findParent(current.id, getAllItems());
-      }
-      setBreadcrumbPath(path);
+      localStorage.setItem('current_folder_id', folder.id);
+      setCurrentFolder(folder);
+      buildBreadcrumbPath(folder, allItems);
+      setDriveItems(folder.child);
     } else {
+      localStorage.removeItem('current_folder_id');
+      setCurrentFolder(null);
       setBreadcrumbPath([]);
+      setDriveItems(allItems);
     }
   };
 
-  // Helper to find parent (searches recursively)
   const findParent = (id: string, items: DriveItem[]): DriveItem | null => {
     for (const item of items) {
       if (item.child.some(child => child.id === id)) {
@@ -46,6 +83,8 @@ export default function Home() {
       onFolderSelect={handleFolderSelect}
       currentFolder={currentFolder}
       breadcrumbPath={breadcrumbPath}
+      isLoading={isLoading}
+      onRefresh={refreshDriveItems}
     />
   );
 }

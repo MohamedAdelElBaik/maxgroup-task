@@ -18,12 +18,14 @@ interface CreateFileDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   currentFolderId?: string;
+  onRefresh: () => void;
 }
 
 export function CreateFileDialog({
   open,
   onOpenChange,
-  currentFolderregardingId,
+  currentFolderId,
+  onRefresh,
 }: CreateFileDialogProps) {
   const [fileName, setFileName] = useState('');
   const [error, setError] = useState('');
@@ -41,6 +43,7 @@ export function CreateFileDialog({
       setFileName('');
       setError('');
       onOpenChange(false);
+      onRefresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create file');
     }

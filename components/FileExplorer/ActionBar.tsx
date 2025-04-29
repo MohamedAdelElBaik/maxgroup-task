@@ -11,14 +11,29 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { createFile } from '@/lib/fun';
 
 interface ActionBarProps {
   currentFolderId?: string;
+  onRefresh: () => void;
 }
 
-export function ActionBar({ currentFolderId }: ActionBarProps) {
+export function ActionBar({ currentFolderId, onRefresh }: ActionBarProps) {
   const [isFolderDialogOpen, setIsFolderDialogOpen] = useState(false);
   const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        createFile(file.name, currentFolderId, file.size);
+        onRefresh();
+      } catch (err) {
+        console.error('Upload failed:', err);
+      }
+    }
+    e.target.value = ''; // Reset input
+  };
 
   const desktopActions = (
     <div className="hidden md:flex items-center space-x-2">
@@ -44,6 +59,7 @@ export function ActionBar({ currentFolderId }: ActionBarProps) {
         <input
           type="file"
           className="absolute inset-0 w-full opacity-0 cursor-pointer"
+          onChange={handleFileUpload}
         />
       </div>
 
@@ -87,6 +103,7 @@ export function ActionBar({ currentFolderId }: ActionBarProps) {
             <input
               type="file"
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              onChange={handleFileUpload}
             />
           </div>
         </DropdownMenuContent>
@@ -107,12 +124,14 @@ export function ActionBar({ currentFolderId }: ActionBarProps) {
         open={isFolderDialogOpen}
         onOpenChange={setIsFolderDialogOpen}
         currentFolderId={currentFolderId}
+        onRefresh={onRefresh}
       />
 
       <CreateFileDialog
         open={isFileDialogOpen}
         onOpenChange={setIsFileDialogOpen}
         currentFolderId={currentFolderId}
+        onRefresh={onRefresh}
       />
     </>
   );

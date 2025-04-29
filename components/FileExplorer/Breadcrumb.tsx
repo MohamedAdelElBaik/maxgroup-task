@@ -15,17 +15,23 @@ export function Breadcrumb({ path, onNavigate }: BreadcrumbProps) {
       <Button
         variant="link"
         className="p-0 h-auto text-muted-foreground"
-        onClick={() => onNavigate(null)}
+        onClick={(e) => {
+          e.stopPropagation();
+          onNavigate(null);
+        }}
       >
         Home
       </Button>
-      {path.map((folder, index) => (
+      {path.map((folder) => (
         <div key={folder.id} className="flex items-center">
           <ChevronRight className="h-4 w-4 mx-1" />
           <Button
             variant="link"
             className="p-0 h-auto text-muted-foreground"
-            onClick={() => onNavigate(folder)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onNavigate(folder);
+            }}
           >
             {folder.name}
           </Button>

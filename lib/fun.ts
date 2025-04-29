@@ -27,7 +27,7 @@ export const storeItemsInLocalStorage = (items: DriveItem[]) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
 };
 
-export function createFile(name: string, parentId?: string) {
+export function createFile(name: string, parentId?: string, size?: number) {
   const sanitizedName = name.trim().replace(/[<>:"/\\|?*]/g, '');
   if (!sanitizedName) throw new Error("Invalid file name");
 
@@ -38,6 +38,7 @@ export function createFile(name: string, parentId?: string) {
     type: "file",
     createdAt: new Date().toISOString(),
     child: [],
+    size: size || 0,
   };
 
   if (!parentId) {
@@ -57,6 +58,7 @@ export function createFile(name: string, parentId?: string) {
   }
 
   storeItemsInLocalStorage(allItems);
+  return allItems;
 }
 
 export function createFolder(name: string, parentId?: string) {
@@ -89,9 +91,10 @@ export function createFolder(name: string, parentId?: string) {
   }
 
   storeItemsInLocalStorage(allItems);
+  return allItems;
 }
 
-function findItemById(id: string, items: DriveItem[]): DriveItem | undefined {
+export function findItemById(id: string, items: DriveItem[]): DriveItem | undefined {
   for (const item of items) {
     if (item.id === id) return item;
     if (item.child.length > 0) {

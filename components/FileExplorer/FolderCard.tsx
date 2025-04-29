@@ -21,6 +21,7 @@ export const FolderCard = forwardRef<HTMLDivElement, FolderCardProps>(
     const formattedDate = new Date(folder.createdAt).toLocaleDateString();
 
     const handleClick = (e: React.MouseEvent) => {
+      // Only trigger onSelect if the click is not on a button or dropdown
       if (!(e.target as HTMLElement).closest('button')) {
         onSelect();
       }
@@ -53,17 +54,15 @@ export const FolderCard = forwardRef<HTMLDivElement, FolderCardProps>(
               variant="ghost"
               size="icon"
               className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+              onClick={(e) => e.stopPropagation()}
             >
               <MoreHorizontal className="h-4 w-4" />
               <span className="sr-only">Actions</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
             <DropdownMenuItem
               className="text-destructive focus:text-destructive cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
             >
               <Trash className="h-4 w-4 mr-2" />
               Delete

@@ -1,6 +1,5 @@
 'use client';
 
-import { getFileIcon, getFileTypeColor } from '@/lib/utils';
 import { File, MoreHorizontal, Trash } from 'lucide-react';
 import {
   DropdownMenu,
@@ -19,8 +18,15 @@ interface FileCardProps {
 
 export const FileCard = forwardRef<HTMLDivElement, FileCardProps>(
   ({ file }, ref) => {
+    const formattedDate = new Date(file.createdAt).toLocaleDateString();
+    // Mock file size (since DriveItem doesn't store size)
+    const formattedSize = formatFileSize(Math.floor(Math.random() * 1000000)); // Random size up to 1MB
 
-    console.log(file.name)
+    function formatFileSize(bytes: number): string {
+      if (bytes < 1024) return `${bytes} B`;
+      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+      return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    }
 
     return (
       <div
@@ -36,9 +42,9 @@ export const FileCard = forwardRef<HTMLDivElement, FileCardProps>(
             {file.name}
           </h3>
           <div className="flex items-center text-xs text-muted-foreground mt-1">
-            <span>{"formattedDate"}</span>
+            <span>{formattedDate}</span>
             <span className="mx-2">•</span>
-            <span>{"formattedSize"}</span>
+            <span>{formattedSize}</span>
           </div>
         </div>
 
@@ -56,7 +62,6 @@ export const FileCard = forwardRef<HTMLDivElement, FileCardProps>(
           <DropdownMenuContent align="end">
             <DropdownMenuItem
               className="text-destructive focus:text-destructive cursor-pointer"
-            //         onClick={() => onDelete(file.id)}
             >
               <Trash className="h-4 w-4 mr-2" />
               Delete

@@ -18,12 +18,16 @@ interface CreateFolderDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   currentFolderId?: string;
+  onRefresh: () => void;
+  onCreateFolder?: (name: string) => void; // Added for EmptyState compatibility
 }
 
 export function CreateFolderDialog({
   open,
   onOpenChange,
   currentFolderId,
+  onRefresh,
+  onCreateFolder,
 }: CreateFolderDialogProps) {
   const [folderName, setFolderName] = useState('');
   const [error, setError] = useState('');
@@ -38,9 +42,11 @@ export function CreateFolderDialog({
 
     try {
       createFolder(folderName, currentFolderId);
+      if (onCreateFolder) onCreateFolder(folderName); // Call EmptyState callback
       setFolderName('');
       setError('');
       onOpenChange(false);
+      onRefresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create folder');
     }
