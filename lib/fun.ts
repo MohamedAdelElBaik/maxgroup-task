@@ -2,7 +2,6 @@ import { DriveItem } from "./types"
 
 const STORAGE_KEY = 'drive_clone_data';
 
-
 export const getAllItems = (): DriveItem[] => {
   if (typeof window !== 'undefined') {
     const data = localStorage.getItem(STORAGE_KEY);
@@ -11,29 +10,94 @@ export const getAllItems = (): DriveItem[] => {
   return [];
 };
 
-export const getItemById = (id: string | null): DriveItem | undefined => {
-  if (id === null) return undefined;
-
-  const allItems = getAllItems();
-  return allItems.find(item => item.id === id);
+export const getItemByName = (name: string, parentItems: DriveItem[]): DriveItem | undefined => {
+  for (const item of parentItems) {
+    if (item.name.toLowerCase() === name.toLowerCase() && item.type === "folder") {
+      return item;
+    }
+    if (item.child.length > 0) {
+      const found = getItemByName(name, item.child);
+      if (found) return found;
+    }
+  }
+  return undefined;
 };
 
-export function storeItemInLocalStorage(item: DriveItem) {
+export const storeItemsInLocalStorage = (items: DriveItem[]) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+};
+
+export function createFile(name: string, parentId?: string) {
+  const sanitizedName = name.trim().replace(/[<>:"/\\|?*]/g, '');
+  if (!sanitizedName) throw new Error("Invalid file name");
+
   const allItems = getAllItems();
-  allItems.push(item);
+  const newFile: DriveItem = {
+    id: `file_${Date.now()}`,
+    name: sanitizedName,
+    type: "file",
+    createdAt: new Date().toISOString(),
+    child: [],
+  };
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(allItems));
+  if (!parentId) {
+    if (allItems.some(item => item.name.toLowerCase() === sanitizedName.toLowerCase())) {
+      throw new Error("File with this name already exists");
+    }
+    allItems.push(newFile);
+  } else {
+    const parent = findItemById(parentId, allItems);
+    if (!parent || parent.type !== "folder") {
+      throw new Error("Parent folder not found");
+    }
+    if (parent.child.some(item => item.name.toLowerCase() === sanitizedName.toLowerCase())) {
+      throw new Error("File with this name already exists in this folder");
+    }
+    parent.child.push(newFile);
+  }
+
+  storeItemsInLocalStorage(allItems);
 }
 
-export function createFile(name: string) {
-  // save in locale storage
-  storeItemInLocalStorage({ name, id: "33", type: "file", createdAt: String(Date.now()) })
-  // 
+export function createFolder(name: string, parentId?: string) {
+  const sanitizedName = name.trim().replace(/[<>:"/\\|?*]/g, '');
+  if (!sanitizedName) throw new Error("Invalid folder name");
+
+  const allItems = getAllItems();
+  const newFolder: DriveItem = {
+    id: `folder_${Date.now()}`,
+    name: sanitizedName,
+    type: "folder",
+    createdAt: new Date().toISOString(),
+    child: [],
+  };
+
+  if (!parentId) {
+    if (allItems.some(item => item.name.toLowerCase() === sanitizedName.toLowerCase())) {
+      throw new Error("Folder with this name already exists");
+    }
+    allItems.push(newFolder);
+  } else {
+    const parent = findItemById(parentId, allItems);
+    if (!parent || parent.type !== "folder") {
+      throw new Error("Parent folder not found");
+    }
+    if (parent.child.some(item => item.name.toLowerCase() === sanitizedName.toLowerCase())) {
+      throw new Error("Folder with this name already exists in this folder");
+    }
+    parent.child.push(newFolder);
+  }
+
+  storeItemsInLocalStorage(allItems);
 }
 
-export function createFolder(name: string) {
-  // save in locale storage
-  storeItemInLocalStorage({ name, id: "33", type: "folder", createdAt: String(Date.now()), child: null })
-  // 
+function findItemById(id: string, items: DriveItem[]): DriveItem | undefined {
+  for (const item of items) {
+    if (item.id === id) return item;
+    if (item.child.length > 0) {
+      const found = findItemById(id, item.child);
+      if (found) return found;
+    }
+  }
+  return undefined;
 }
-

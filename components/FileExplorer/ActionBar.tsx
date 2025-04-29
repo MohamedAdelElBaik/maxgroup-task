@@ -12,12 +12,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+interface ActionBarProps {
+  currentFolderId?: string;
+}
 
-export function ActionBar() {
+export function ActionBar({ currentFolderId }: ActionBarProps) {
   const [isFolderDialogOpen, setIsFolderDialogOpen] = useState(false);
   const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
 
-  // Desktop view
   const desktopActions = (
     <div className="hidden md:flex items-center space-x-2">
       <Button
@@ -57,7 +59,6 @@ export function ActionBar() {
     </div>
   );
 
-  // Mobile view
   const mobileActions = (
     <div className="md:hidden">
       <DropdownMenu>
@@ -105,11 +106,13 @@ export function ActionBar() {
       <CreateFolderDialog
         open={isFolderDialogOpen}
         onOpenChange={setIsFolderDialogOpen}
+        currentFolderId={currentFolderId}
       />
 
       <CreateFileDialog
         open={isFileDialogOpen}
         onOpenChange={setIsFileDialogOpen}
+        currentFolderId={currentFolderId}
       />
     </>
   );

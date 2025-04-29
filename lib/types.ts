@@ -3,5 +3,5 @@ export type DriveItem = {
   name: string;
   createdAt: string;
   type: "folder" | "file";
-  child?: DriveItem[] | null;
+  child: DriveItem[];
 }

@@ -17,11 +17,13 @@ import { createFile } from '@/lib/fun';
 interface CreateFileDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  currentFolderId?: string;
 }
 
 export function CreateFileDialog({
   open,
   onOpenChange,
+  currentFolderregardingId,
 }: CreateFileDialogProps) {
   const [fileName, setFileName] = useState('');
   const [error, setError] = useState('');
@@ -34,10 +36,14 @@ export function CreateFileDialog({
       return;
     }
 
-    createFile(fileName)
-    setFileName('');
-    setError('');
-    onOpenChange(false);
+    try {
+      createFile(fileName, currentFolderId);
+      setFileName('');
+      setError('');
+      onOpenChange(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create file');
+    }
   };
 
   return (

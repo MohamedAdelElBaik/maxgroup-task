@@ -17,11 +17,13 @@ import { createFolder } from '@/lib/fun';
 interface CreateFolderDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  currentFolderId?: string;
 }
 
 export function CreateFolderDialog({
   open,
   onOpenChange,
+  currentFolderId,
 }: CreateFolderDialogProps) {
   const [folderName, setFolderName] = useState('');
   const [error, setError] = useState('');
@@ -34,10 +36,14 @@ export function CreateFolderDialog({
       return;
     }
 
-    createFolder(folderName)
-    setFolderName('');
-    setError('');
-    onOpenChange(false);
+    try {
+      createFolder(folderName, currentFolderId);
+      setFolderName('');
+      setError('');
+      onOpenChange(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create folder');
+    }
   };
 
   return (
