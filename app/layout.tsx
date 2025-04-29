@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     siteName: 'Adel Drive Clone',
     images: [
       {
-        url: '/og.jpg',
+        url: 'https://maxgroup-task.vercel.app/og.jpg',
         width: 1200,
         height: 630,
         alt: 'Adel Clone Preview',
