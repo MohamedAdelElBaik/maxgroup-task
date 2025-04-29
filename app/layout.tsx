@@ -8,8 +8,24 @@ import { Sidebar } from '@/components/Sidebar/Sidebar';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'MyDrive - Google Drive Clone',
-  description: 'A simple Google Drive clone built with Next.js',
+  title: 'Adel Drive Clone',
+  description: 'A Google Drive clone built with Next.js',
+  openGraph: {
+    title: 'Adel Drive Clone',
+    description: 'A Google Drive clone built with Next.js',
+    url: 'https://maxgroup-task.vercel.app/',
+    siteName: 'Adel Drive Clone',
+    images: [
+      {
+        url: '/og.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Adel Clone Preview',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
 };
 
 export default function RootLayout({
