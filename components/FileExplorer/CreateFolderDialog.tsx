@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FolderPlus } from 'lucide-react';
+import { createFolder } from '@/lib/fun';
 
 interface CreateFolderDialogProps {
   open: boolean;
@@ -33,6 +34,7 @@ export function CreateFolderDialog({
       return;
     }
 
+    createFolder(folderName)
     setFolderName('');
     setError('');
     onOpenChange(false);

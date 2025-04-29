@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { FileType } from './types';
+import { FileType } from './types.ts';
 import { FileText, Image, FileSpreadsheet, Presentation as FilePresentation, FileIcon, Video, Music, Archive, Code, File } from 'lucide-react';
 
 export function cn(...inputs: ClassValue[]) {

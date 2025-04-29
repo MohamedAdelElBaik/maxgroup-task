@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FileUp } from 'lucide-react';
+import { createFile } from '@/lib/fun';
 
 interface CreateFileDialogProps {
   open: boolean;
@@ -33,6 +34,7 @@ export function CreateFileDialog({
       return;
     }
 
+    createFile(fileName)
     setFileName('');
     setError('');
     onOpenChange(false);
