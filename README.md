@@ -1,4 +1,4 @@
-# Google Drive Clone
+# Adel Drive Clone
 
 A lightweight, client-side Google Drive clone built with **Next.js**, **TypeScript**, **React**, and **Tailwind CSS**. This project simulates a file storage system using `localStorage` for persistence, featuring breadcrumb navigation, folder/file creation, file uploads, and an intuitive empty state UI. It’s designed for a seamless user experience with single-click navigation and skeleton loading effects.
 
